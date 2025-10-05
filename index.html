@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A magyar gyermekvédelmi rendszer átfogó elemzése - 20 év bizonyíték (2005-2025)">
+    <meta name="keywords" content="gyermekvédelem, Magyarország, emberi jogok, roma gyermekek">
+    <title>Védelem - A Magyar Gyermekvédelmi Rendszer Átfogó Elemzése</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.7;
+            color: #1a1a1a;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header {
+            border-bottom: 3px solid #c41e3a;
+            padding-bottom: 30px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .language-link {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 0.9em;
+            color: #c41e3a;
+            text-decoration: none;
+            padding: 8px 15px;
+            border: 1px solid #c41e3a;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .language-link:hover {
+            background: #c41e3a;
+            color: white;
+        }
+
+        h1 {
+            font-size: 1.8em;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            color: #c41e3a;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        h3 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        h4 {
+            font-size: 1.2em;
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+
+        .verdict-box {
+            background: #fff3cd;
+            border-left: 5px solid #c41e3a;
+            padding: 20px;
+            margin: 30px 0;
+        }
+
+        .scandal-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .scandal-box h4 {
+            color: #721c24;
+            margin-top: 0;
+        }
+
+        .vector-box {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .vector-box h4 {
+            color: #0c5460;
+            margin-top: 0;
+        }
+
+        .stats-highlight {
+            background: #e7f3ff;
+            border-left: 5px solid #2196F3;
+            padding: 20px;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        .recommendation-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .recommendation-box h4 {
+            color: #155724;
+            margin-top: 0;
+        }
+
+        ul {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        a {
+            color: #c41e3a;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        a:hover {
+            border-bottom-color: #c41e3a;
+        }
+
+        .doc-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .doc-link {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            transition: all 0.3s;
+        }
+
+        .doc-link:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .doc-link a {
+            display: block;
+            font-weight: 600;
+        }
+
+        .conclusion-box {
+            background: #1a1a1a;
+            color: white;
+            padding: 30px;
+            margin: 40px 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .conclusion-box h2 {
+            color: white;
+            border: none;
+            margin-top: 0;
+        }
+
+        .conclusion-box p {
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin: 15px 0;
+        }
+
+        .cta {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #c41e3a;
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 5px;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+            text-align: center;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            h2 {
+                font-size: 1.4em;
+            }
+
+            .doc-links {
+                grid-template-columns: 1fr;
+            }
+
+            .language-link {
+                position: static;
+                display: inline-block;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index_en.html" class="language-link">🇬🇧 English version</a>
+            <h1>A Magyar Gyermekvédelmi Rendszer Átfogó Elemzése</h1>
+        </header>
+
+        <div class="verdict-box">
+            <h3>⚖️ A Verdikt: Szándékos, Rendszerszintű Visszaélésre Tervezett Rendszer</h3>
+            <p>20 év bizonyítékok (2005-2025) átfogó elemzése után a kutatás egyértelműen bizonyítja a <strong>szándékos rendszerszintű visszélést</strong> a magyar gyermekvédelemben - nem puszta hanyagságot.</p>
+        </div>
+
+        <h2>🚨 Főbb Botrányok</h2>
+
+        <div class="scandal-box">
+            <h4>Szőlő utcai Javítóintézet (2015-2025)</h4>
+            <ul>
+                <li>Az igazgatót 2025 májusában letartóztatták emberkereskedelemért és szexuális kizsákmányolásért</li>
+                <li><strong>10 év folyamatos panaszok figyelmen kívül hagyása</strong> jelzők ellenére</li>
+                <li>"Befolyásos körök" védelme megakadályozta a vizsgálatot</li>
+                <li>Az elkövetőt előléptették és kitüntették, miközben gyermekekkel kereskedett</li>
+            </ul>
+        </div>
+
+        <div class="scandal-box">
+            <h4>Bicskei Elnöki Kegyelem (2024)</h4>
+            <ul>
+                <li>Bántalmazás eltussolásáért elítélt elkövető kegyelmet kapott</li>
+                <li>Nemzeti válság: az elnök és az igazságügyi miniszter lemondott</li>
+                <li>Püspök lobbizott a kegyelemért, felfedve az egyház-állam összefonódást</li>
+            </ul>
+        </div>
+
+        <div class="scandal-box">
+            <h4>Ózdi Régió (2011-napjainkig)</h4>
+            <ul>
+                <li>Roma gyermekek rendszerszintű szegregációja szegénység alapú kiemelések révén</li>
+                <li>Az összes kiemelés egyharmada gazdasági depriváció, nem bántalmazás miatt</li>
+                <li>Téves gyógypedagógiai besorolások</li>
+            </ul>
+        </div>
+
+        <h2>📊 A Három Faktoros Bukás</h2>
+
+        <div class="vector-box">
+            <h4>1️⃣ Humántőke Entrópia (HCE)</h4>
+            <ul>
+                <li>Fizetések: 270 000 Ft/hó (a megélhetési költségek alatt)</li>
+                <li>31,9% dolgozói fluktuáció (2023)</li>
+                <li>53 intézmény bezárása 2024-ben személyzeti válság miatt</li>
+                <li>A kormány bizonyította a hatalmas kiadási kapacitást máshol (családpolitika: GDP 4%-a)</li>
+            </ul>
+        </div>
+
+        <div class="vector-box">
+            <h4>2️⃣ Strukturális Kudarc Védelem (SPF)</h4>
+            <ul>
+                <li>"Életmód ellenőrzés" szimbolikus kudarcra tervezve (emberkereskedők átmennek a szűrésen)</li>
+                <li>Adminisztratív hierarchia védi az intézményeket a gyerekekkel szemben</li>
+                <li>Vizsgálatok évtizedes elfojtása</li>
+                <li>Jelzők jogilag elhallgattatva</li>
+            </ul>
+        </div>
+
+        <div class="vector-box">
+            <h4>3️⃣ Szegénység Megállapítása és Elfogultság (PTB)</h4>
+            <ul>
+                <li>Roma gyermekek "súlyosan túlreprezentáltak" a gondozásban</li>
+                <li>A rendszer erősíti a többgenerációs marginalizációt</li>
+                <li>Gondozás utáni pénzügyi korlátok biztosítják az "állandó kiszolgáltatottságot"</li>
+            </ul>
+        </div>
+
+        <div class="stats-highlight">
+            <h3>💰 800:1 Költési Arány Mutatja a Prioritásokat</h3>
+            <ul>
+                <li><strong>Családpolitika</strong> (pronatalista üzenetek): <strong>4 800 milliárd Ft/év</strong> (GDP 4%-a)</li>
+                <li><strong>Gyermekvédelem</strong> (veszélyeztetett gyerekek): <strong>~7 milliárd Ft/év</strong></li>
+            </ul>
+        </div>
+
+        <h2>📅 20 Év Figyelmen Kívül Hagyott Figyelmeztetések</h2>
+        <ul>
+            <li>2007: Ombudsman jelenti a Szőlő utcai visszaéléseket → Nincs intézkedés</li>
+            <li>2011: Haláleset Ózdi gyermekotthonban → Nincs reform</li>
+            <li>2015: Emberkereskedelem bejelentések → Egy évtizedig elfojtva</li>
+            <li>2015-2025: <strong>Nyolc egymást követő év</strong> dokumentált jogsértések → Nulla kormányzati válasz</li>
+            <li>Intézkedés csak bírósági parancsok vagy nyilvános botrányok után</li>
+        </ul>
+
+        <h2>🌍 Nemzetközi Kontextus</h2>
+        <ul>
+            <li><strong>Történelmi EU per</strong>: 16 tagállam + Európai Parlament vs. Magyarország</li>
+            <li><strong>700+ millió euró felfüggesztve</strong> EU-s finanszírozásból</li>
+            <li><strong>2025 ősz várható ítélet</strong> (főtanácsnok a Bizottság mellé állt)</li>
+            <li>Magyarország ELFORDUL az EU bevált gyakorlataitól</li>
+        </ul>
+
+        <div class="stats-highlight">
+            <h3>👥 Az Áldozatok: 23 000 Gyermek</h3>
+            <p>A magyar gondozási rendszerben lévő 23 000 gyermek strukturálisan lehetetlen körülményekkel néz szembe a minőségi gondozáshoz - <strong>terv szerint, nem véletlenül</strong>.</p>
+        </div>
+
+        <h2>✅ Kritikus Ajánlások</h2>
+
+        <div class="recommendation-box">
+            <h4>Azonnali (0-6 hónap)</h4>
+            <ul>
+                <li>Független vizsgálati mechanizmus - minisztériumon kívüli, idézési joggal</li>
+                <li>Sürgősségi bér stabilizáció - 150% nemzeti medián gyermekvédelmi dolgozóknak</li>
+                <li>Civil társadalom helyreállítása - NGO korlátozások visszavonása</li>
+            </ul>
+        </div>
+
+        <div class="recommendation-box">
+            <h4>Középtávú (6-24 hónap)</h4>
+            <ul>
+                <li>Decentralizált regionális testületek - pénzügyileg autonóm, politikailag szigetelt</li>
+                <li>Kötelező szakmai standardok - bizonyítékokon alapuló gyakorlat</li>
+                <li>Szegénység-érzékeny prevenció - családi támogatás kiemelés előtt</li>
+            </ul>
+        </div>
+
+        <div class="recommendation-box">
+            <h4>Hosszútávú (2-5 év)</h4>
+            <ul>
+                <li>Teljes intézményi rendszer lebontása - 90% családi alapú gondozás 2027-re</li>
+                <li>Utógondozási forradalom - lakhatási garancia 25 éves korig</li>
+                <li>Gyermek részvételi keretrendszer - független jogi képviselet</li>
+            </ul>
+        </div>
+
+        <h2>📚 Dokumentáció</h2>
+
+        <h3>Fő Elemzési Dokumentumok</h3>
+        <div class="doc-links">
+            <div class="doc-link">
+                <a href="docs/EXECUTIVE_SUMMARY_HU.md">📋 Vezetői Összefoglaló</a>
+                <p style="margin-top: 8px; font-size: 0.9em; color: #666;">Tömör megállapítások és ajánlások</p>
+            </div>
+            <div class="doc-link">
+                <a href="docs/Hungarian_Child_Care_System_Research_HU.md">📚 Magyar Gyermekvédelmi Rendszer Kutatás</a>
+                <p style="margin-top: 8px; font-size: 0.9em; color: #666;">Részletes rendszerelemzés</p>
+            </div>
+            <div class="doc-link">
+                <a href="docs/compass_artifact_HU.md">🧭 Compass Kutatási Dokumentum</a>
+                <p style="margin-top: 8px; font-size: 0.9em; color: #666;">Átfogó gyermekvédelmi kutatás</p>
+            </div>
+            <div class="doc-link">
+                <a href="docs/gpt5_HU.md">🤖 GPT-5 Kutatási Dokumentum</a>
+                <p style="margin-top: 8px; font-size: 0.9em; color: #666;">Átfogó rendszerelemzés</p>
+            </div>
+            <div class="doc-link">
+                <a href="docs/kimi_HU.md">🔬 Kimi Kutatási Dokumentum</a>
+                <p style="margin-top: 8px; font-size: 0.9em; color: #666;">Részletes kutatási anyag</p>
+            </div>
+            <div class="doc-link">
+                <a href="docs/COMPREHENSIVE_ANALYSIS_REPORT_HU.md">📄 Átfogó Elemzési Jelentés</a>
+                <p style="margin-top: 8px; font-size: 0.9em; color: #666;">Teljes 11 fejezetes elemzés (11 000+ szó)</p>
+            </div>
+        </div>
+
+        <h3>Kutatási Dokumentumok</h3>
+        <h4>Általános Kutatás</h4>
+        <div class="doc-links">
+            <div class="doc-link">
+                <a href="docs/research/international-context_HU.md">🌍 Nemzetközi Kontextus</a>
+            </div>
+            <div class="doc-link">
+                <a href="docs/research/pattern_analysis_report_HU.md">🔍 Minta Elemzési Jelentés</a>
+            </div>
+            <div class="doc-link">
+                <a href="research/government-role-analysis-2005-2025_HU.md">🏛️ Kormányzati Szerep Elemzés 2005-2025</a>
+            </div>
+            <div class="doc-link">
+                <a href="research/key-findings-summary_HU.md">📊 Főbb Megállapítások Összefoglalása</a>
+            </div>
+        </div>
+
+        <h4>Érintettek Térképe</h4>
+        <div class="doc-links">
+            <div class="doc-link">
+                <a href="research/stakeholders/README_HU.md">📖 Érintettek README</a>
+            </div>
+            <div class="doc-link">
+                <a href="research/stakeholders/church-institutions_HU.md">⛪ Egyházi Intézmények</a>
+            </div>
+            <div class="doc-link">
+                <a href="research/stakeholders/conflicts-of-interest-map_HU.md">⚠️ Összeférhetetlenségi Térkép</a>
+            </div>
+            <div class="doc-link">
+                <a href="research/stakeholders/government-agencies_HU.md">🏛️ Kormányzati Szervek</a>
+            </div>
+            <div class="doc-link">
+                <a href="research/stakeholders/individual-actors_HU.md">👤 Egyéni Szereplők</a>
+            </div>
+            <div class="doc-link">
+                <a href="research/stakeholders/international-oversight_HU.md">🌐 Nemzetközi Felügyelet</a>
+            </div>
+            <div class="doc-link">
+                <a href="research/stakeholders/ngos-civil-society_HU.md">🤝 Civil Szervezetek</a>
+            </div>
+            <div class="doc-link">
+                <a href="research/stakeholders/power-dynamics-analysis_HU.md">⚡ Hatalmi Dinamikák Elemzése</a>
+            </div>
+            <div class="doc-link">
+                <a href="research/stakeholders/private-contractors_HU.md">💼 Magán Vállalkozók</a>
+            </div>
+            <div class="doc-link">
+                <a href="research/stakeholders/STAKEHOLDER-RELATIONSHIP-MAP_HU.md">🗺️ Érintettek Kapcsolati Térképe</a>
+            </div>
+        </div>
+
+        <h3>Egyéb Dokumentumok</h3>
+        <div class="doc-links">
+            <div class="doc-link">
+                <a href="docs/Hungarian_Child_Care_System_Research_HU.md">📚 Magyar Gyermekvédelmi Rendszer Kutatás (Teljes)</a>
+            </div>
+            <div class="doc-link">
+                <a href="docs/compass_artifact_HU.md">🧭 Compass Kutatási Dokumentum (Teljes)</a>
+            </div>
+            <div class="doc-link">
+                <a href="docs/kimi_HU.md">🔬 Kimi Kutatási Dokumentum (Teljes)</a>
+            </div>
+            <div class="doc-link">
+                <a href="docs/gpt5_HU.md">🤖 GPT-5 Kutatási Dokumentum (Teljes)</a>
+            </div>
+        </div>
+
+        <h3>Vizuális Megjelenítések</h3>
+        <div class="doc-links">
+            <div class="doc-link">
+                <a href="gemini.html">🎨 Gemini Vizualizáció</a>
+            </div>
+            <div class="doc-link">
+                <a href="visual.html">📊 Vizuális Áttekintés</a>
+            </div>
+        </div>
+
+        <div class="conclusion-box">
+            <h2>🎯 A Kutatás Lényege</h2>
+            <p>Ez nem szociálpolitikai kudarc - ez a demokratikus elszámoltathatóság alapvető próbája. A bizonyítékok átfogóak. A megoldások ismertek. Ami hiányzik, az a <strong>politikai akarat</strong> - és ezt létre kell hozni a kitartó civil társadalmi nyomás, a nemzetközi értékek érvényesítése, a jelzők védelme és a gyermekek hangjának középpontba helyezése révén.</p>
+
+            <div class="cta">
+                A kegyelem nélküli elszámoltathatóság ideje most van.
+            </div>
+        </div>
+
+        <footer>
+        </footer>
+    </div>
+</body>
+</html>

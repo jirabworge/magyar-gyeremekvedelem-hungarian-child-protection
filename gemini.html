@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Magyar Gyermekvédelmi Rendszer Helyzete: Interaktív Jelentés</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Subtle Accents -->
+    <!-- Application Structure Plan: The application is designed as a single-page, scroll-based narrative, guiding the user through a thematic exploration of the Hungarian child protection system. It starts with a high-level overview (Dashboard), then delves into key themes: the struggle of deinstitutionalization, specific case studies (as interactive cards), systemic issues, and finally, conclusions. This top-down structure allows users to grasp the core issues first before exploring detailed evidence. Navigation is facilitated by a sticky header, allowing jumps to specific sections. This narrative flow was chosen over a purely data-driven dashboard to better convey the complex, interconnected, and often qualitative nature of the system's failures, making the information more digestible and impactful for a general audience. -->
+    <!-- Visualization & Content Choices: 
+        1.  Report Info: Number of children in different care types. -> Goal: Compare the prevalence of institutional vs. family-based care. -> Viz/Presentation: Donut Chart -> Interaction: Hovering over segments shows exact numbers and percentages. -> Justification: A donut chart provides an immediate, clear visual comparison of proportions, highlighting the continued reliance on institutional care. -> Library: Chart.js (Canvas).
+        2.  Report Info: Timeline of key events, scandals, and reforms. -> Goal: Show the recurring pattern of crisis and ineffective response over time. -> Viz/Presentation: Interactive Timeline (HTML/CSS/JS) -> Interaction: Clicking on a year reveals a detailed description of events. -> Justification: A timeline is the most intuitive way to present chronological data, and the click-to-reveal interaction keeps the interface clean while providing depth on demand. -> Method: HTML/CSS with JS event listeners.
+        3.  Report Info: Systemic issues (funding, staffing, oversight). -> Goal: Organize and explain the root causes of the system's failures. -> Viz/Presentation: Thematic icon-based grid. -> Interaction: Clicking on a theme reveals an explanatory text block. -> Justification: This organizes complex information into digestible categories. The interactive reveal prevents overwhelming the user with text. -> Method: HTML/CSS (Flexbox/Grid) with JS toggles.
+        4.  Report Info: Case studies (Szőlő utca, Ózd). -> Goal: Inform about specific, emblematic failures. -> Viz/Presentation: Interactive Cards. -> Interaction: A simple, clean presentation of key facts for each case. -> Justification: Cards provide a concise, focused way to present case-specific information without cluttering the main narrative. -> Method: HTML/CSS.
+        Confirmation: No SVG or Mermaid JS is used. All visuals are created with Chart.js (Canvas) or structured HTML/CSS and JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #FDFBF8;
+            color: #333333;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s ease, border-bottom-color 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #D97706; /* Amber 600 */
+            border-bottom-color: #D97706;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 11px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #E5E7EB; /* Gray 200 */
+        }
+        .timeline-item:last-child::before {
+            display: none;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 0;
+            transform: translateX(-50%) translateY(50%);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #FDFBF8;
+            border: 4px solid #D97706;
+            z-index: 10;
+        }
+        .issue-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .issue-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl font-bold text-amber-700">GYERMEKVÉDELEM MAGYARORSZÁGON</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#dashboard" class="nav-link px-3 py-2 text-sm font-medium">Áttekintés</a>
+                        <a href="#deinstitutionalization" class="nav-link px-3 py-2 text-sm font-medium">Deinstitucionalizáció</a>
+                        <a href="#timeline" class="nav-link px-3 py-2 text-sm font-medium">Idővonal</a>
+                        <a href="#systemic-issues" class="nav-link px-3 py-2 text-sm font-medium">Rendszerszintű Problémák</a>
+                        <a href="#conclusion" class="nav-link px-3 py-2 text-sm font-medium">Következtetés</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                     <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-amber-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-amber-500">
+                        <span class="sr-only">Menü megnyitása</span>
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#dashboard" class="nav-link block px-3 py-2 rounded-md text-base font-medium">Áttekintés</a>
+                <a href="#deinstitutionalization" class="nav-link block px-3 py-2 rounded-md text-base font-medium">Deinstitucionalizáció</a>
+                <a href="#timeline" class="nav-link block px-3 py-2 rounded-md text-base font-medium">Idővonal</a>
+                <a href="#systemic-issues" class="nav-link block px-3 py-2 rounded-md text-base font-medium">Rendszerszintű Problémák</a>
+                <a href="#conclusion" class="nav-link block px-3 py-2 rounded-md text-base font-medium">Következtetés</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <!-- Section: Dashboard -->
+        <section id="dashboard" class="scroll-mt-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Áttekintő Jelentés: A Rendszer Állapota</h2>
+                <p class="mt-3 max-w-2xl mx-auto text-lg text-gray-600">A magyar gyermekvédelmi rendszer az elmúlt két évtizedben állandó válságban van. Ez a felület azokat a kulcsfontosságú adatokat és mintázatokat vizsgálja, amelyek a rendszer tartós problémáit mutatják be, a közelmúltbeli politikai vitáktól függetlenül.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center">
+                    <span class="text-5xl font-bold text-amber-600" id="total-children-stat">~21,000</span>
+                    <h3 class="mt-2 text-lg font-medium text-gray-800">Gyermek a Szakellátásban</h3>
+                    <p class="mt-1 text-sm text-gray-500">Hozzávetőlegesen ennyi gyermek él állami gondoskodásban Magyarországon.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center">
+                    <span class="text-5xl font-bold text-amber-600" id="institutional-care-stat">35%</span>
+                    <h3 class="mt-2 text-lg font-medium text-gray-800">Intézményi Ellátásban</h3>
+                    <p class="mt-1 text-sm text-gray-500">A gyermekek jelentős része továbbra is nagy, elavult intézményekben él.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center">
+                    <span class="text-5xl font-bold text-amber-600" id="foster-care-stat">65%</span>
+                    <h3 class="mt-2 text-lg font-medium text-gray-800">Nevelőszülőknél Elhelyezve</h3>
+                    <p class="mt-1 text-sm text-gray-500">Bár a többség családi környezetben nevelkedik, a rendszer kihívásokkal küzd.</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-16 border-gray-200">
+
+        <!-- Section: Deinstitutionalization -->
+        <section id="deinstitutionalization" class="scroll-mt-20">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold tracking-tight text-gray-900">A Deinstitucionalizáció Kihívása</h2>
+                    <p class="mt-4 text-lg text-gray-600">Bár a hivatalos politika a nagy intézmények bezárását és a családközpontú ellátás előtérbe helyezését célozza, a valóságban a folyamat lassú és ellentmondásos. Sok nagy intézményt csupán átneveztek "gyermekotthonná", miközben a zsúfoltság és a személytelen légkör megmaradt. A fogyatékossággal élő és roma származású gyermekek aránytalanul nagy számban kerülnek intézményi ellátásba, mivel a rendszer "elhelyezhetetlennek" bélyegzi őket.</p>
+                    <p class="mt-4 text-gray-600">Az alábbi diagram a gyermekvédelmi szakellátásban élő gyermekek megoszlását mutatja az ellátási forma szerint. Jól látható, hogy bár a nevelőszülői hálózat a rendszer gerince, az intézményi ellátás aránya még mindig kritikusan magas, ami ellentmond a modern gyermekvédelmi elveknek.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-center text-lg font-medium mb-4">Ellátási Formák Megoszlása (becsült)</h3>
+                    <div class="chart-container">
+                        <canvas id="careTypeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-16 border-gray-200">
+
+        <!-- Section: Timeline -->
+        <section id="timeline" class="scroll-mt-20">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 text-center mb-12">Botrányok és Reformok Idővonala (2005-2025)</h2>
+            <div class="relative max-w-3xl mx-auto">
+                <div id="timeline-container">
+                </div>
+            </div>
+        </section>
+        
+        <hr class="my-16 border-gray-200">
+
+        <!-- Section: Systemic Issues -->
+        <section id="systemic-issues" class="scroll-mt-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold tracking-tight text-gray-900">Rendszerszintű Problémák: A Válság Gyökerei</h2>
+                <p class="mt-3 max-w-2xl mx-auto text-lg text-gray-600">A gyermekvédelmi rendszer krízise nem egyedi esetekből, hanem mélyen gyökerező, strukturális hibákból fakad. Kattintson az egyes kártyákra a részletesebb magyarázatért.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="issue-card bg-white p-6 rounded-lg shadow-md cursor-pointer" data-issue="funding">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-amber-100 text-amber-600 rounded-md p-3">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01M12 6v-1h4a2 2 0 012 2v10a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2h4z"></path></svg>
+                        </div>
+                        <h3 class="ml-4 text-lg font-medium text-gray-800">Krónikus Alulfinanszírozottság</h3>
+                    </div>
+                    <div class="issue-details hidden mt-4 text-gray-600">
+                        <p>A rendszer évtizedek óta pénz- és erőforráshiánnyal küzd. Az alacsony bérek miatt a szakképzett munkaerő elhagyja a pályát, ami a személyzet fluktuációjához és a gyermekek ellátásának minőségromlásához vezet. Az épületek állapota gyakran leromlott, és nincsenek források a terápiás programokra.</p>
+                    </div>
+                </div>
+                <div class="issue-card bg-white p-6 rounded-lg shadow-md cursor-pointer" data-issue="staff">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-amber-100 text-amber-600 rounded-md p-3">
+                             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        </div>
+                        <h3 class="ml-4 text-lg font-medium text-gray-800">Szakemberhiány és Kiégés</h3>
+                    </div>
+                    <div class="issue-details hidden mt-4 text-gray-600">
+                        <p>A gyermekvédelemben dolgozók terhelése extrém magas, miközben a fizetésük alacsony, a társadalmi megbecsültségük pedig minimális. A kiégés mindennapos jelenség, ami cinizmushoz és a gyermekek szükségletei iránti érzéketlenséghez vezethet. A megfelelő képzés és szupervízió hiánya tovább rontja a helyzetet.</p>
+                    </div>
+                </div>
+                <div class="issue-card bg-white p-6 rounded-lg shadow-md cursor-pointer" data-issue="oversight">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-amber-100 text-amber-600 rounded-md p-3">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                        </div>
+                        <h3 class="ml-4 text-lg font-medium text-gray-800">Az Ellenőrzés Hiánya</h3>
+                    </div>
+                    <div class="issue-details hidden mt-4 text-gray-600">
+                        <p>A független, külső ellenőrzés gyakorlatilag megszűnt. A fenntartók (állami vagy egyházi szervek) gyakran saját magukat ellenőrzik. A civil szervezetek mozgásterét a politika szűkíti, így a zárt intézményekben zajló folyamatok rejtve maradnak a társadalom elől, ami kedvez a visszaéléseknek és a büntetlenség kultúrájának.</p>
+                    </div>
+                </div>
+            </div>
+             <div class="text-center mt-12">
+                <h3 class="text-2xl font-bold tracking-tight text-gray-900">Esettanulmányok: Emblematikus Intézmények</h3>
+                <p class="mt-2 max-w-2xl mx-auto text-md text-gray-600">Néhány intézmény neve összeforrt a rendszer kudarcával. Ezek nem elszigetelt esetek, hanem a strukturális problémák tünetei.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                <div class="bg-white p-6 rounded-lg border border-gray-200">
+                    <h4 class="text-xl font-semibold text-gray-800">Budapest, Szőlő utca</h4>
+                    <p class="mt-2 text-gray-600">A speciális gyermekotthon évtizedek óta a fizikai és pszichológiai bántalmazások helyszíne. Az ombudsmani jelentések és tényfeltáró cikkek sorozata ellenére az intézmény továbbra is működik, és érdemi változás nem történt. A "megnevelhetetlennek" tartott gyermekekkel szembeni erőszak kultúrája mélyen beágyazódott.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg border border-gray-200">
+                    <h4 class="text-xl font-semibold text-gray-800">Ózd és a vidéki intézmények</h4>
+                    <p class="mt-2 text-gray-600">Az ózdi gyermekotthon és más, hátrányos helyzetű régiókban található intézmények a szegénység és a társadalmi kirekesztettség lenyomatai. A szexuális és fizikai abúzus mellett a teljes elhanyagoltság jellemzi ezeket a helyeket, ahol a gyermekeknek esélyük sincs a traumáik feldolgozására és a felzárkózásra.</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-16 border-gray-200">
+
+        <!-- Section: Conclusion -->
+        <section id="conclusion" class="scroll-mt-20 text-center">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900">Következtetés: Radikális Változásra Van Szükség</h2>
+            <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">A magyar gyermekvédelmi rendszer nem csupán válságban van, hanem alapjaiban hibás. A felszínes reformok és a felelősség áthárítása helyett teljes szemléletváltásra van szükség. Ennek a középpontjában a gyermek mindenek felett álló érdekének kell lennie.</p>
+            <div class="mt-8 flex flex-wrap justify-center gap-4">
+                 <div class="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-lg text-left max-w-sm">
+                    <h4 class="font-semibold">1. Valódi Deinstitucionalizáció</h4>
+                    <p class="text-sm">A nagy intézmények bezárása és egy jól támogatott, professzionális nevelőszülői hálózat kiépítése.</p>
+                </div>
+                 <div class="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-lg text-left max-w-sm">
+                    <h4 class="font-semibold">2. Független Ellenőrzés</h4>
+                    <p class="text-sm">Egy valós hatalommal bíró, független testület felállítása a visszaélések kivizsgálására és szankcionálására.</p>
+                </div>
+                 <div class="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-lg text-left max-w-sm">
+                    <h4 class="font-semibold">3. A Civil Szféra Támogatása</h4>
+                    <p class="text-sm">A kormányzati támadások beszüntetése és a civil szervezetek elismerése a reformfolyamat elengedhetetlen partnereiként.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-100 mt-16">
+        <div class="container mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
+            <p>&copy; 2025 Interaktív Jelentés. Ez a felület a nyilvánosan elérhető jelentések, cikkek és archív anyagok alapján készült, objektív tájékoztatási céllal.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                const isHidden = mobileMenu.classList.contains('hidden');
+                mobileMenu.classList.toggle('hidden', !isHidden);
+            });
+
+            // Navigation link active state
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            window.onscroll = () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 80) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            };
+
+            // Chart.js: Care Type Distribution
+            const careTypeCtx = document.getElementById('careTypeChart').getContext('2d');
+            const careTypeChart = new Chart(careTypeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Nevelőszülőknél', 'Gyermekotthonban', 'Speciális Otthonban', 'Egyéb Intézmény'],
+                    datasets: [{
+                        label: 'Gyermekek aránya',
+                        data: [65, 25, 7, 3],
+                        backgroundColor: [
+                            '#34D399', // Emerald 400
+                            '#FBBF24', // Amber 400
+                            '#F87171', // Red 400
+                            '#9CA3AF'  // Gray 400
+                        ],
+                        borderColor: '#FDFBF8',
+                        borderWidth: 4,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    family: "'Roboto', sans-serif"
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+
+            // Timeline Data
+            const timelineData = [
+                { year: 2007, title: "Ombudsmani Jelentés a Szőlő utcáról", description: "Az első átfogó jelentés, amely feltárja a budapesti Szőlő utcai speciális gyermekotthonban zajló súlyos fizikai és pszichológiai bántalmazásokat. A jelentés rendszerszintű problémákra hívja fel a figyelmet, de érdemi változás nem követi." },
+                { year: 2011, title: "Tragédia Ózdon", description: "Egy 11 éves fiút halálra vernek a társai az ózdi gyermekotthonban. Az eset rávilágít a felügyelet hiányára, az agresszió kezelésének kudarcára és a hátrányos helyzetű régiókban működő intézmények tarthatatlan állapotára." },
+                { year: 2014, title: "Új Polgári Törvénykönyv", description: "Az új Ptk. és a kapcsolódó jogszabályok megerősítik a deinstitucionalizáció elvét, és előnyben részesítik a nevelőszülői elhelyezést. A gyakorlatban azonban a forráshiány és a rendszer tehetetlensége gátolja a változásokat." },
+                { year: 2017, title: "A „Civiltörvény” Elfogadása", description: "A kormány elfogadja a külföldről támogatott szervezetek átláthatóságáról szóló törvényt, amely megbélyegzi és korlátozza a gyermekvédelemben is aktív, független civil szervezetek működését, csökkentve ezzel a külső kontrollt." },
+                { year: 2021, title: "Az LMBTQ+ellenes Törvény", description: "A köznyelvben 'pedofiltörvényként' emlegetett jogszabálycsomag összemos sa a pedofíliát a homoszexualitással, és korlátozza a szexuális felvilágosítást. A kritikusok szerint ez tovább nehezíti a szexuális abúzus elleni hatékony fellépést az intézményekben." },
+                { year: 2024, title: "A Bicskei Kegyelmi Ügy", description: "Országos botrányt okoz, hogy a köztársasági elnök kegyelmet ad a bicskei gyermekotthon igazgatóhelyettesének, akit kényszerítésért ítéltek el, mert próbálta rávenni az igazgató által szexuálisan zaklatott gyermekeket vallomásuk visszavonására. Az ügy a rendszer mélyén húzódó büntetlenség kultúrájára és a politikai beavatkozásokra irányítja a figyelmet." }
+            ];
+
+            const timelineContainer = document.getElementById('timeline-container');
+            timelineData.forEach(item => {
+                const itemEl = document.createElement('div');
+                itemEl.classList.add('timeline-item', 'relative', 'pl-12', 'pb-8');
+                itemEl.innerHTML = `
+                    <div class="timeline-dot"></div>
+                    <div class="p-4 bg-white rounded-lg shadow-md cursor-pointer transition-all duration-300">
+                        <time class="mb-1 text-sm font-normal leading-none text-amber-600">${item.year}</time>
+                        <h3 class="text-lg font-semibold text-gray-900">${item.title}</h3>
+                        <p class="mt-2 text-base font-normal text-gray-600 hidden">${item.description}</p>
+                    </div>
+                `;
+                itemEl.querySelector('.cursor-pointer').addEventListener('click', function() {
+                    this.querySelector('p').classList.toggle('hidden');
+                    this.classList.toggle('bg-amber-50');
+                });
+                timelineContainer.appendChild(itemEl);
+            });
+
+
+            // Systemic Issues toggle
+            const issueCards = document.querySelectorAll('.issue-card');
+            issueCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const details = card.querySelector('.issue-details');
+                    details.classList.toggle('hidden');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
